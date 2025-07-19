@@ -121,6 +121,9 @@ export function SoundLibrary({ onSampleDrag, onSamplePreview, onUpload }: SoundL
           <Upload className="w-4 h-4 mr-2" />
           Upload Sample
         </Button>
+        <p className="text-xs text-gray-500 mt-2 text-center">
+          Supports WAV, MP3, OGG files
+        </p>
       </div>
     </aside>
   );

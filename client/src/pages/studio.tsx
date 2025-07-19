@@ -95,11 +95,27 @@ export default function Studio() {
         } else {
           // Create a new project if none exist
           const response = await apiRequest("POST", "/api/projects", {
-            name: projectName,
+            name: "My First Track",
             bpm: 128,
           });
           const newProject = await response.json();
           setProjectId(newProject.id);
+          setProjectName(newProject.name);
+          
+          // Add some default tracks to get started
+          const defaultTracks = [
+            { name: "Kick", order: 0 },
+            { name: "Hi-Hat", order: 1 },
+            { name: "Bass", order: 2 },
+            { name: "Lead", order: 3 }
+          ];
+          
+          for (const track of defaultTracks) {
+            await apiRequest("POST", `/api/projects/${newProject.id}/tracks`, track);
+          }
+          
+          // Invalidate queries to refresh the track list
+          queryClient.invalidateQueries({ queryKey: ["/api/projects", newProject.id, "tracks"] });
         }
       } catch (error) {
         console.error("Failed to initialize project:", error);
@@ -162,8 +178,46 @@ export default function Studio() {
   };
 
   const handleUpload = () => {
-    // TODO: Implement file upload
-    toast({ title: "Upload functionality coming soon" });
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.wav,.mp3,.ogg';
+    input.multiple = true;
+    
+    input.onchange = async (e) => {
+      const files = (e.target as HTMLInputElement).files;
+      if (!files) return;
+      
+      for (const file of Array.from(files)) {
+        try {
+          const formData = new FormData();
+          formData.append('file', file);
+          formData.append('name', file.name.replace(/\.[^/.]+$/, ""));
+          formData.append('category', 'drums'); // Default category
+          
+          const response = await fetch('/api/samples', {
+            method: 'POST',
+            body: formData,
+            credentials: 'include', // Include session cookies for authentication
+          });
+          
+          if (response.ok) {
+            toast({ title: `Uploaded ${file.name} successfully` });
+            // Invalidate samples query to refresh the list
+            queryClient.invalidateQueries({ queryKey: ["/api/samples"] });
+          } else {
+            throw new Error(`Upload failed: ${response.statusText}`);
+          }
+        } catch (error) {
+          console.error('Upload error:', error);
+          toast({ 
+            title: `Failed to upload ${file.name}`, 
+            variant: "destructive" 
+          });
+        }
+      }
+    };
+    
+    input.click();
   };
 
   const handleProjectNameChange = (name: string) => {

@@ -58,7 +58,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/samples", upload.single('file'), async (req, res) => {
+  app.post("/api/samples", isAuthenticated, upload.single('file'), async (req, res) => {
     try {
       const { name, category, bpm, tags } = req.body;
       const file = req.file;

@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Track } from "@shared/schema";
 
 interface MixerSectionProps {
@@ -100,6 +101,19 @@ export function MixerSection({
   onMasterVolumeChange,
   onAddEffect,
 }: MixerSectionProps) {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: -200, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: 200, behavior: 'smooth' });
+    }
+  };
   const updateTrackEffect = (trackId: number, effect: string, value: number) => {
     const track = tracks.find(t => t.id === trackId);
     if (track) {

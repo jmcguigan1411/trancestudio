@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Track, Sample } from "@shared/schema";
 
 interface SequencerGridProps {
@@ -20,8 +21,21 @@ export function SequencerGrid({
 }: SequencerGridProps) {
   const [stepCount, setStepCount] = useState("16");
   const [quantize, setQuantize] = useState("1/16");
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const steps = parseInt(stepCount);
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: -200, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: 200, behavior: 'smooth' });
+    }
+  };
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -81,7 +95,27 @@ export function SequencerGrid({
         </div>
 
         <div className="bg-secondary rounded-lg p-4">
-          <div className="overflow-x-auto">
+          <div className="flex items-center mb-2">
+            <div className="w-32 flex-shrink-0"></div>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={scrollLeft}
+              className="mr-2"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={scrollRight}
+              className="mr-2"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+            <span className="text-sm text-gray-400">Scroll to see more steps</span>
+          </div>
+          <div className="overflow-x-auto" ref={scrollContainerRef}>
             {/* Step numbers */}
             <div className="flex mb-2" style={{ minWidth: `${32 + steps * 40}px` }}>
               <div className="w-32 flex-shrink-0"></div>
