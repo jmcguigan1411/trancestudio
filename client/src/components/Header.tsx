@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Music, Play, Pause, Square, Circle, Settings } from "lucide-react";
+import { Music, Play, Pause, Square, Circle, Settings, LogOut } from "lucide-react";
 
 interface HeaderProps {
   projectName: string;
@@ -96,6 +96,14 @@ export function Header({
           className="text-gray-400 hover:text-white"
         >
           <Settings className="w-4 h-4" />
+        </Button>
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={() => window.location.href = '/api/logout'}
+          className="text-gray-400 hover:text-white"
+        >
+          <LogOut className="w-4 h-4" />
         </Button>
       </div>
     </header>

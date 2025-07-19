@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { setupAuth, isAuthenticated } from "./replitAuth";
 import { insertSampleSchema, insertTrackSchema, insertProjectSchema } from "@shared/schema";
 import multer from "multer";
 import path from "path";
@@ -17,6 +18,20 @@ const upload = multer({
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Auth middleware
+  await setupAuth(app);
+
+  // Auth routes
+  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
   // Samples
   app.get("/api/samples", async (req, res) => {
     try {
@@ -72,20 +87,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Projects
-  app.get("/api/projects", async (req, res) => {
+  // Projects (protected routes)
+  app.get("/api/projects", isAuthenticated, async (req: any, res) => {
     try {
-      const projects = await storage.getProjects();
+      const userId = req.user.claims.sub;
+      const projects = await storage.getProjects(userId);
       res.json(projects);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch projects" });
     }
   });
 
-  app.get("/api/projects/:id", async (req, res) => {
+  app.get("/api/projects/:id", isAuthenticated, async (req: any, res) => {
     try {
       const id = parseInt(req.params.id);
-      const project = await storage.getProject(id);
+      const userId = req.user.claims.sub;
+      const project = await storage.getProject(id, userId);
       if (!project) {
         return res.status(404).json({ message: "Project not found" });
       }
@@ -95,9 +112,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/projects", async (req, res) => {
+  app.post("/api/projects", isAuthenticated, async (req: any, res) => {
     try {
-      const projectData = insertProjectSchema.parse(req.body);
+      const userId = req.user.claims.sub;
+      const projectData = insertProjectSchema.parse({
+        ...req.body,
+        userId: userId
+      });
       const project = await storage.createProject(projectData);
       res.status(201).json(project);
     } catch (error) {
@@ -108,22 +129,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/projects/:id", async (req, res) => {
+  app.patch("/api/projects/:id", isAuthenticated, async (req: any, res) => {
     try {
       const id = parseInt(req.params.id);
-      const updates = req.body;
-      const project = await storage.updateProject(id, updates);
-      if (!project) {
+      const userId = req.user.claims.sub;
+      
+      // Check if user owns this project
+      const existingProject = await storage.getProject(id, userId);
+      if (!existingProject) {
         return res.status(404).json({ message: "Project not found" });
       }
+      
+      const updates = req.body;
+      const project = await storage.updateProject(id, updates);
       res.json(project);
     } catch (error) {
       res.status(500).json({ message: "Failed to update project" });
     }
   });
 
-  // Tracks
-  app.get("/api/projects/:projectId/tracks", async (req, res) => {
+  // Tracks (protected routes)  
+  app.get("/api/projects/:projectId/tracks", isAuthenticated, async (req: any, res) => {
     try {
       const projectId = parseInt(req.params.projectId);
       const tracks = await storage.getTracksByProject(projectId);
@@ -133,7 +159,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/projects/:projectId/tracks", async (req, res) => {
+  app.post("/api/projects/:projectId/tracks", isAuthenticated, async (req: any, res) => {
     try {
       const projectId = parseInt(req.params.projectId);
       const trackData = insertTrackSchema.parse({
@@ -150,7 +176,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/tracks/:id", async (req, res) => {
+  app.patch("/api/tracks/:id", isAuthenticated, async (req: any, res) => {
     try {
       const id = parseInt(req.params.id);
       const updates = req.body;
@@ -164,7 +190,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/tracks/:id", async (req, res) => {
+  app.delete("/api/tracks/:id", isAuthenticated, async (req: any, res) => {
     try {
       const id = parseInt(req.params.id);
       const success = await storage.deleteTrack(id);

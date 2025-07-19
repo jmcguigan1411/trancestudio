@@ -103,6 +103,10 @@ export default function Studio() {
         }
       } catch (error) {
         console.error("Failed to initialize project:", error);
+        if (error.message.includes("401")) {
+          // User is not authenticated, redirect to login
+          window.location.href = "/api/login";
+        }
       }
     };
 

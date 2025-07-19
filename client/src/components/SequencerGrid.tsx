@@ -80,66 +80,69 @@ export function SequencerGrid({
           </div>
         </div>
 
-        <div className="bg-secondary rounded-lg p-4 overflow-x-auto">
-          {/* Step numbers */}
-          <div className="flex mb-2 min-w-max">
-            <div className="w-32 flex-shrink-0"></div>
-            <div className="flex gap-1" style={{ minWidth: `${steps * 40}px` }}>
-              {Array.from({ length: steps }, (_, i) => (
-                <div
-                  key={i}
-                  className={`w-8 text-center text-xs font-mono flex-shrink-0 ${
-                    currentStep === i && isPlaying ? "text-accent" : "text-gray-500"
-                  }`}
-                >
-                  {i + 1}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Track rows */}
-          {tracks.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              Add tracks to start sequencing
-            </div>
-          ) : (
-            tracks.map((track) => (
-              <div
-                key={track.id}
-                className="flex items-center mb-2 min-w-max"
-                onDragOver={handleDragOver}
-                onDrop={(e) => handleDrop(e, track.id)}
-              >
-                <div className="w-32 pr-4 flex-shrink-0">
-                  <div className="text-sm font-medium truncate">{track.name}</div>
-                </div>
-                <div className="flex gap-1" style={{ minWidth: `${steps * 40}px` }}>
-                  {Array.from({ length: steps }, (_, stepIndex) => {
-                    const isActive = getStepState(track, stepIndex);
-                    const isCurrent = currentStep === stepIndex && isPlaying;
-                    
-                    return (
-                      <Button
-                        key={stepIndex}
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onStepToggle(track.id, stepIndex)}
-                        className={`
-                          w-8 h-8 p-0 rounded flex-shrink-0
-                          ${isActive 
-                            ? "step-active bg-accent hover:bg-accent/80" 
-                            : "bg-gray-750 hover:bg-gray-600"
-                          }
-                          ${isCurrent ? "ring-2 ring-accent" : ""}
-                        `}
-                      />
-                    );
-                  })}
-                </div>
+        <div className="bg-secondary rounded-lg p-4">
+          <div className="overflow-x-auto">
+            {/* Step numbers */}
+            <div className="flex mb-2" style={{ minWidth: `${32 + steps * 40}px` }}>
+              <div className="w-32 flex-shrink-0"></div>
+              <div className="flex gap-1">
+                {Array.from({ length: steps }, (_, i) => (
+                  <div
+                    key={i}
+                    className={`w-8 text-center text-xs font-mono flex-shrink-0 ${
+                      currentStep === i && isPlaying ? "text-accent" : "text-gray-500"
+                    }`}
+                  >
+                    {i + 1}
+                  </div>
+                ))}
               </div>
-            ))
-          )}
+            </div>
+
+            {/* Track rows */}
+            {tracks.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                Add tracks to start sequencing
+              </div>
+            ) : (
+              tracks.map((track) => (
+                <div
+                  key={track.id}
+                  className="flex items-center mb-2"
+                  style={{ minWidth: `${32 + steps * 40}px` }}
+                  onDragOver={handleDragOver}
+                  onDrop={(e) => handleDrop(e, track.id)}
+                >
+                  <div className="w-32 pr-4 flex-shrink-0">
+                    <div className="text-sm font-medium truncate">{track.name}</div>
+                  </div>
+                  <div className="flex gap-1">
+                    {Array.from({ length: steps }, (_, stepIndex) => {
+                      const isActive = getStepState(track, stepIndex);
+                      const isCurrent = currentStep === stepIndex && isPlaying;
+                      
+                      return (
+                        <Button
+                          key={stepIndex}
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onStepToggle(track.id, stepIndex)}
+                          className={`
+                            w-8 h-8 p-0 rounded flex-shrink-0
+                            ${isActive 
+                              ? "step-active bg-accent hover:bg-accent/80" 
+                              : "bg-gray-750 hover:bg-gray-600"
+                            }
+                            ${isCurrent ? "ring-2 ring-accent" : ""}
+                          `}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </div>
     </div>
