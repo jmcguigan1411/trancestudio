@@ -1,0 +1,46 @@
+I want to build a browser-based music production app focused on trance and house music, with a simple but powerful UI, suitable for both beginners and experienced producers.
+
+The app should allow users to create, remix, and manipulate music, with access to a wide variety of built-in sounds and tools.
+
+🔧 Core Features:
+	1.	Sound Library (1000+ sounds):
+	•	Include preloaded samples categorized by drums, basslines, synths, leads, pads, FX, vocals.
+	•	Option for users to upload their own samples (WAV, MP3).
+	•	Allow users to tag, categorize, and save custom sounds to their personal library.
+	2.	Sound Editor/Designer:
+	•	Enable waveform editing (cut, trim, loop).
+	•	Include pitch shifting, time stretching, and reversing sounds.
+	•	Offer distortion, delay, reverb, chorus, flanger, and filter effects (low-pass, high-pass, band-pass).
+	•	Visual EQ editor with draggable bands.
+	•	Basic synthesizer module for creating custom sounds (oscillators, LFOs, ADSR envelope).
+	3.	Sequencer/Arrangement View:
+	•	Drag-and-drop interface to arrange tracks and loops.
+	•	Layer multiple tracks (multi-track support).
+	•	Grid-style step sequencer for beat making (like FL Studio or Ableton).
+	•	MIDI keyboard input support (virtual + external).
+	4.	Mixer:
+	•	Per-track volume, pan, and mute/solo controls.
+	•	Add/send effects to individual tracks or master channel.
+	•	Visualization of levels with VU meters.
+	5.	Remixing Tools:
+	•	Auto BPM detection and sync for imported samples.
+	•	Tools for slicing audio into loops or one-shots.
+	•	DJ-style live remixing pads (8+ pads with assignable samples).
+	•	Looping, stuttering, gating, and reverse effects live.
+	6.	Export & Import:
+	•	Allow saving/exporting the final track as WAV/MP3.
+	•	Import/export project files (.json or custom format) to resume later.
+	7.	UI Design:
+	•	Clean, intuitive interface with a dark theme.
+	•	Minimal but modern controls—knobs, sliders, grids.
+	•	Responsive layout (desktop/tablet/mobile friendly).
+	8.	Audio Engine/Backend:
+	•	Use the Web Audio API or Tone.js for audio processing.
+	•	If needed, use WASM-based libraries for performance-heavy DSP.
+	9.	Optional but Nice-to-Have:
+	•	Built-in tutorials or tooltips for beginners.
+	•	Share and browse community-made sounds or remixes.
+	•	Live collab feature (Firebase/WebSockets) for real-time collaboration.
+	•	AI-assisted remix suggestions or beat-matching.
+
+Start by scaffolding the app with all major components stubbed out and use dummy sounds and samples. Use React (with Tailwind or styled-components) or another modern frontend framework of your choice. Modularize the code so components like the sequencer, mixer, editor, and library can evolve independently.
