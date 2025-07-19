@@ -103,3 +103,25 @@
 .overflow-x-auto::-webkit-scrollbar-thumb:hover {
   background: hsl(195, 100%, 50%);
 }
+
+/* Custom timeline slider */
+.slider::-webkit-slider-thumb {
+  appearance: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: hsl(195, 100%, 50%);
+  cursor: pointer;
+  border: 2px solid hsl(210, 10%, 12%);
+  box-shadow: 0 0 6px rgba(0, 212, 255, 0.5);
+}
+
+.slider::-moz-range-thumb {
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: hsl(195, 100%, 50%);
+  cursor: pointer;
+  border: 2px solid hsl(210, 10%, 12%);
+  box-shadow: 0 0 6px rgba(0, 212, 255, 0.5);
+}

@@ -17,6 +17,8 @@ export default function Studio() {
   const [activeTrackId, setActiveTrackId] = useState<number | undefined>();
   const [masterVolume, setMasterVolume] = useState(75);
   const [projectName, setProjectName] = useState("Untitled Project");
+  const [currentTime, setCurrentTime] = useState(0);
+  const [totalTime, setTotalTime] = useState(240); // 4 minutes default
   
   const { toast } = useToast();
   const { isInitialized, isLoading: audioLoading, error: audioError } = useAudioEngine();
@@ -239,6 +241,11 @@ export default function Studio() {
     toast({ title: `Adding effect${trackId ? ` to track` : ` to master`}` });
   };
 
+  const handleTimelineSeek = (value: number) => {
+    setCurrentTime(value);
+    // TODO: Seek audio engine to this position
+  };
+
   if (audioError) {
     return (
       <div className="min-h-screen bg-primary text-white flex items-center justify-center">
@@ -310,6 +317,53 @@ export default function Studio() {
             onMasterVolumeChange={setMasterVolume}
             onAddEffect={handleAddEffect}
           />
+          
+          {/* Timeline/Progress Slider at Bottom */}
+          <div className="bg-secondary border-t border-gray-700 p-4">
+            <div className="flex items-center space-x-4">
+              <span className="text-sm text-gray-400 w-16">
+                {formatTime(currentTime)}
+              </span>
+              <div className="flex-1 relative">
+                <input
+                  type="range"
+                  min="0"
+                  max={totalTime}
+                  value={currentTime}
+                  onChange={(e) => handleTimelineSeek(Number(e.target.value))}
+                  className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
+                  style={{
+                    background: `linear-gradient(to right, hsl(195, 100%, 50%) 0%, hsl(195, 100%, 50%) ${(currentTime / totalTime) * 100}%, hsl(210, 10%, 18%) ${(currentTime / totalTime) * 100}%, hsl(210, 10%, 18%) 100%)`
+                  }}
+                />
+                <div className="absolute top-0 left-0 right-0 h-2 pointer-events-none">
+                  {/* Timeline markers every 30 seconds */}
+                  {Array.from({ length: Math.floor(totalTime / 30) }, (_, i) => (
+                    <div
+                      key={i}
+                      className="absolute top-0 w-px h-full bg-gray-600"
+                      style={{ left: `${((i + 1) * 30 / totalTime) * 100}%` }}
+                    />
+                  ))}
+                </div>
+                <div className="absolute top-3 left-0 right-0 pointer-events-none">
+                  {/* Time labels every minute */}
+                  {Array.from({ length: Math.floor(totalTime / 60) + 1 }, (_, i) => (
+                    <span
+                      key={i}
+                      className="absolute text-xs text-gray-500 transform -translate-x-1/2"
+                      style={{ left: `${(i * 60 / totalTime) * 100}%` }}
+                    >
+                      {i}:00
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <span className="text-sm text-gray-400 w-16">
+                {formatTime(totalTime)}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
