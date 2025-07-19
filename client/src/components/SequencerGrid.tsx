@@ -80,15 +80,15 @@ export function SequencerGrid({
           </div>
         </div>
 
-        <div className="bg-secondary rounded-lg p-4">
+        <div className="bg-secondary rounded-lg p-4 overflow-x-auto">
           {/* Step numbers */}
-          <div className="flex mb-2">
-            <div className="w-32"></div>
-            <div className={`flex-1 grid gap-1`} style={{ gridTemplateColumns: `repeat(${steps}, minmax(0, 1fr))` }}>
+          <div className="flex mb-2 min-w-max">
+            <div className="w-32 flex-shrink-0"></div>
+            <div className="flex gap-1" style={{ minWidth: `${steps * 40}px` }}>
               {Array.from({ length: steps }, (_, i) => (
                 <div
                   key={i}
-                  className={`text-center text-xs font-mono ${
+                  className={`w-8 text-center text-xs font-mono flex-shrink-0 ${
                     currentStep === i && isPlaying ? "text-accent" : "text-gray-500"
                   }`}
                 >
@@ -107,14 +107,14 @@ export function SequencerGrid({
             tracks.map((track) => (
               <div
                 key={track.id}
-                className="flex items-center mb-2"
+                className="flex items-center mb-2 min-w-max"
                 onDragOver={handleDragOver}
                 onDrop={(e) => handleDrop(e, track.id)}
               >
-                <div className="w-32 pr-4">
+                <div className="w-32 pr-4 flex-shrink-0">
                   <div className="text-sm font-medium truncate">{track.name}</div>
                 </div>
-                <div className={`flex-1 grid gap-1`} style={{ gridTemplateColumns: `repeat(${steps}, minmax(0, 1fr))` }}>
+                <div className="flex gap-1" style={{ minWidth: `${steps * 40}px` }}>
                   {Array.from({ length: steps }, (_, stepIndex) => {
                     const isActive = getStepState(track, stepIndex);
                     const isCurrent = currentStep === stepIndex && isPlaying;
@@ -126,7 +126,7 @@ export function SequencerGrid({
                         size="sm"
                         onClick={() => onStepToggle(track.id, stepIndex)}
                         className={`
-                          aspect-square p-0 rounded
+                          w-8 h-8 p-0 rounded flex-shrink-0
                           ${isActive 
                             ? "step-active bg-accent hover:bg-accent/80" 
                             : "bg-gray-750 hover:bg-gray-600"

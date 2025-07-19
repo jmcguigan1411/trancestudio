@@ -149,10 +149,11 @@ export function MixerSection({
       </div>
 
       {/* Channel Mixer */}
-      <div className="flex-1 flex overflow-x-auto">
-        {tracks.map((track) => (
-          <div key={track.id} className="w-48 border-r border-gray-700 p-3 shrink-0">
-            <div className="text-sm font-medium mb-3 truncate">{track.name}</div>
+      <div className="flex-1 overflow-x-auto">
+        <div className="flex min-w-max">
+          {tracks.map((track) => (
+            <div key={track.id} className="w-48 border-r border-gray-700 p-3 flex-shrink-0">
+              <div className="text-sm font-medium mb-3 truncate">{track.name}</div>
 
             <div className="space-y-3">
               {/* EQ Section */}
@@ -214,8 +215,9 @@ export function MixerSection({
                 <VUMeter level={track.volume || 75} />
               </div>
             </div>
-          </div>
-        ))}
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

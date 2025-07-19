@@ -84,12 +84,23 @@ export default function Studio() {
   useEffect(() => {
     const initializeProject = async () => {
       try {
-        const response = await apiRequest("POST", "/api/projects", {
-          name: projectName,
-          bpm: 128,
-        });
-        const newProject = await response.json();
-        setProjectId(newProject.id);
+        // First try to get existing projects
+        const projectsResponse = await apiRequest("GET", "/api/projects");
+        const projects = await projectsResponse.json();
+        
+        if (projects.length > 0) {
+          // Use the first existing project
+          setProjectId(projects[0].id);
+          setProjectName(projects[0].name);
+        } else {
+          // Create a new project if none exist
+          const response = await apiRequest("POST", "/api/projects", {
+            name: projectName,
+            bpm: 128,
+          });
+          const newProject = await response.json();
+          setProjectId(newProject.id);
+        }
       } catch (error) {
         console.error("Failed to initialize project:", error);
       }
@@ -98,7 +109,7 @@ export default function Studio() {
     if (!projectId) {
       initializeProject();
     }
-  }, [projectId, projectName]);
+  }, []);
 
   // Update project name
   useEffect(() => {
@@ -215,8 +226,8 @@ export default function Studio() {
           onUpload={handleUpload}
         />
 
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <main className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex flex-col min-w-0">
+          <main className="flex-1 flex min-h-0">
             <TrackList
               tracks={tracks}
               activeTrackId={activeTrackId}
