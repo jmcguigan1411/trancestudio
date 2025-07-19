@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(195, 100%, 50%);
+  --accent-foreground: hsl(240, 10%, 3.9%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+  
+  /* Custom music app colors */
+  --music-primary: hsl(210, 10%, 10%);
+  --music-secondary: hsl(210, 10%, 18%);
+  --music-accent: hsl(195, 100%, 50%);
+  --music-success: hsl(143, 100%, 50%);
+  --music-warning: hsl(48, 100%, 50%);
+  --music-danger: hsl(348, 83%, 60%);
+  --music-gray-850: hsl(210, 10%, 12%);
+  --music-gray-750: hsl(210, 10%, 17%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground overflow-hidden;
+  }
+}
+
+@layer components {
+  .knob {
+    @apply relative rounded-full border-2 border-gray-600 cursor-pointer transition-all duration-200;
+    background: conic-gradient(from 0deg, hsl(210, 10%, 18%) 0deg, hsl(195, 100%, 50%) 0deg, hsl(210, 10%, 18%) 0deg);
+  }
+  
+  .knob::before {
+    content: '';
+    @apply absolute top-0.5 left-1/2 transform -translate-x-1/2 w-0.5 h-2 bg-white rounded-sm;
+  }
+  
+  .waveform-bar {
+    background: linear-gradient(to top, hsl(195, 100%, 50%), hsl(143, 100%, 50%));
+    animation: waveform 0.5s ease-in-out infinite alternate;
+  }
+  
+  .track-active {
+    box-shadow: inset 2px 0 0 hsl(195, 100%, 50%);
+  }
+  
+  .step-active {
+    @apply bg-accent shadow-lg;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+  }
+  
+  .vu-meter {
+    background: linear-gradient(to top, 
+      hsl(143, 100%, 50%) 0%, 
+      hsl(143, 100%, 50%) 70%, 
+      hsl(48, 100%, 50%) 85%, 
+      hsl(348, 83%, 60%) 100%
+    );
+  }
+}
+
+@keyframes waveform {
+  from { height: 20%; }
+  to { height: 80%; }
+}
+
+/* Custom grid for 16 steps */
+.grid-cols-16 {
+  grid-template-columns: repeat(16, minmax(0, 1fr));
+}
